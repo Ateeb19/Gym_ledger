@@ -64,21 +64,78 @@ export async function POST(req: Request) {
         const { name, email, contact, emergency_contact, height, weight, fitness_goal, personal_training, assign_trainer, medical_condition } = body;
 
         if (!name || !email || !contact || !emergency_contact || !height || !weight || !fitness_goal || !medical_condition) {
-            if (personal_training || !assign_trainer) {
+            // if (personal_training || !assign_trainer) {
+            //     return NextResponse.json(
+            //         { msg: "All fildes are required" },
+            //         { status: 400 }
+            //     );
+            // }
+            // return NextResponse.json(
+            //     { msg: "All fildes are required" },
+            //     { status: 400 }
+            // );
+            if (height === 0 || weight === 0) {
                 return NextResponse.json(
-                    { msg: "All fildes are required" },
+                    { success: false, msg: "Height and weight can not be 0" },
+                    { status: 400 }
+                );
+            }
+            if (isNaN(height) || isNaN(weight)) {
+                return NextResponse.json(
+                    { success: false, msg: "Height and weight must be numbers" },
                     { status: 400 }
                 );
             }
             return NextResponse.json(
-                { msg: "All fildes are required" },
+                { success: false, msg: "All fields are required" },
+                { status: 400 }
+            );
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            return NextResponse.json(
+                { success: false, msg: "Invalid email format" },
                 { status: 400 }
             );
         }
 
+        const phoneRegex = /^[0-9]+$/;
+
+        if (!phoneRegex.test(contact)) {
+            return NextResponse.json(
+                { success: false, msg: "Enter valid contact number" },
+                { status: 400 }
+            );
+        }
+
+        if (!phoneRegex.test(emergency_contact)) {
+            return NextResponse.json(
+                { success: false, msg: "Enter valid emergency contact number" },
+                { status: 400 }
+            );
+        }
+
+        const parsedHeight = parseFloat(height);
+        const parsedWeight = parseFloat(weight);
+
+        if (typeof personal_training !== "boolean") {
+            return NextResponse.json(
+                { success: false, msg: "Personal training must be true or false" },
+                { status: 400 }
+            );
+        }
+
+        if (personal_training && !assign_trainer) {
+            return NextResponse.json(
+                { success: false, msg: "Trainer is required for personal training" },
+                { status: 400 }
+            );
+        }
+
+
         const join_date = new Date();
 
-        const result = await add_member(name, email, contact, emergency_contact, height, weight, fitness_goal, personal_training, assign_trainer, medical_condition, join_date);
+        const result = await add_member(name, email, contact, emergency_contact, parsedHeight, parsedWeight, fitness_goal, personal_training, assign_trainer, medical_condition, join_date);
 
         if (!result.success) {
             return NextResponse.json(
