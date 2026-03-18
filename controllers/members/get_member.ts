@@ -12,7 +12,7 @@ export const get_member = async () => {
     }
 
     const [rows]: any = await db.query(
-        `SELECT * FROM members_list WHERE created_by_id = ?`,
+        `SELECT id, full_name, email, contact, emergency_contact, height, weight, fitness_goal, personal_training, assign_trainer, medical_condition, plan_id, join_date, status FROM members_list WHERE created_by_id = ?`,
         [admin.id]
     )
 
