@@ -1,0 +1,418 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Gym Ledger API",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login user",
+        "description": "Authenticate user and return JWT token stored in cookie",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "ateeb@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": 1234567890
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Login successful"
+                    },
+                    "token": {
+                      "type": "string"
+                    },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Ateeb"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "ateeb@gmail.com"
+                        },
+                        "role": {
+                          "type": "integer",
+                          "example": 0
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or missing fields"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "summary": "Logout user",
+        "description": "Logs out the authenticated user by clearing the authentication cookie.",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful"
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "summary": "Register new user",
+        "description": "Create a new user account",
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "password",
+                  "confirmPass"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "Ateeb"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "ateeb@gmail.com"
+                  },
+                  "password": {
+                    "type": "string",
+                    "example": 12345678
+                  },
+                  "confirmPass": {
+                    "type": "string",
+                    "example": 12345678
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "User registered successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or user already exists"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/hello": {
+      "get": {
+        "summary": "Returns hello message",
+        "description": "Simple API that returns hello message",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      }
+    },
+    "/api/members/add_member": {
+      "post": {
+        "summary": "Add new gym member",
+        "description": "Create a new gym member under the logged-in admin",
+        "tags": [
+          "Members"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "email",
+                  "contact",
+                  "emergency_contact",
+                  "height",
+                  "weight",
+                  "fitness_goal",
+                  "personal_training",
+                  "assign_trainer",
+                  "medical_condition"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "contact": {
+                    "type": "string"
+                  },
+                  "emergency_contact": {
+                    "type": "string"
+                  },
+                  "height": {
+                    "type": "number"
+                  },
+                  "weight": {
+                    "type": "number"
+                  },
+                  "fitness_goal": {
+                    "type": "string"
+                  },
+                  "personal_training": {
+                    "type": "boolean"
+                  },
+                  "assign_trainer": {
+                    "type": "string"
+                  },
+                  "medical_condition": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Member created successfully"
+          },
+          "400": {
+            "description": "Validation error or member already exists"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/members/delete_member/{id}": {
+      "delete": {
+        "summary": "Delete a member",
+        "tags": [
+          "Members"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Member ID to delete",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "msg": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID or request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Member not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/members/get_member": {
+      "get": {
+        "summary": "Get all members created by admin",
+        "tags": [
+          "Members"
+        ],
+        "responses": {
+          "200": {
+            "description": "Members fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Members fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "full_name": {
+                            "type": "string",
+                            "example": "John Doe"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "john@example.com"
+                          },
+                          "contact": {
+                            "type": "string",
+                            "example": "9876543210"
+                          },
+                          "emergency_contact": {
+                            "type": "string",
+                            "example": "9123456789"
+                          },
+                          "height": {
+                            "type": "number",
+                            "example": 175
+                          },
+                          "weight": {
+                            "type": "number",
+                            "example": 70
+                          },
+                          "fitness_goal": {
+                            "type": "string",
+                            "example": "Weight Loss"
+                          },
+                          "personal_training": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "assign_trainer": {
+                            "type": "string",
+                            "example": "Trainer Name"
+                          },
+                          "medical_condition": {
+                            "type": "string",
+                            "example": "None"
+                          },
+                          "join_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-03-17T10:00:00Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "description": "Returns logged-in user profile using authentication token stored in cookies",
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile data returned successfully"
+          },
+          "401": {
+            "description": "Unauthorized user"
+          }
+        }
+      }
+    }
+  },
+  "components": {},
+  "tags": []
+}
