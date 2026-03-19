@@ -49,7 +49,14 @@
 
 import { NextResponse } from "next/server";
 import { signup } from "@/controllers/auth/signupController";
+import { withCors, corsHeaders } from "@/lib/cors";
 
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 export async function POST(req: Request) {
     try {
         const body = await req.json();
@@ -57,43 +64,50 @@ export async function POST(req: Request) {
         const { name, email, password, confirmPass } = body;
 
         if (!name || !email || !password || !confirmPass) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { meg: "All fildes are required" },
                 { status: 400 }
-            );
+            ));
         }
 
-        if(password != confirmPass){
-            return NextResponse.json(
-                {msg: "Password and confirm not match"},
-                {status: 400}
-            )
+        if (password != confirmPass) {
+            return withCors(NextResponse.json(
+                { msg: "Password and confirm not match" },
+                { status: 400 }
+            ))
         }
 
-        if(password.length < 8){
-            return NextResponse.json(
-                {msg: "Password must be 8 characters long"},
-                {status: 400}
-            )
+        if (password.length < 8) {
+            return withCors(NextResponse.json(
+                { msg: "Password must be 8 characters long" },
+                { status: 400 }
+            ))
         }
 
         const result = await signup(name, email, password);
 
         if (!result.success) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { msg: result.msg },
                 { status: 400 }
-            );
+            ));
         }
 
-        return NextResponse.json(
-            { msg: result.msg }
+        const response = NextResponse.json(
+            {
+                success: result.success,
+                msg: result.msg
+            }
         );
+
+        return withCors(response);
+
     }
     catch (error) {
-        return NextResponse.json(
-            { msg: "Server error" },
-            { status: 500 }
-        )
+        return withCors(
+            NextResponse.json(
+                { msg: "Server error" },
+                { status: 500 }
+            ))
     }
 }

@@ -68,25 +68,32 @@
  */
 import { NextResponse } from "next/server";
 import { get_member } from "@/controllers/members/get_member";
+import { withCors, corsHeaders } from "@/lib/cors";
 
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 export async function GET() {
 
     try {
         const result = await get_member();
         
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: result.success,
                 msg: result.msg,
                 data: result.data,
             },
             {status: 200}
-        )
+        ))
 
     } catch (error) {
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { msg: "Server error" },
             { status: 500 }
-        )
+        ))
     }
 }

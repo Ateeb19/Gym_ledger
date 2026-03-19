@@ -12,7 +12,14 @@
  */
 
 import { NextResponse } from "next/server";
+import { withCors, corsHeaders } from "@/lib/cors";
 
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 export async function POST() {
 
 
@@ -24,5 +31,6 @@ export async function POST() {
         expires: new Date(0)
     });
 
-    return response;
+    // return response;
+    return withCors(response);
 }

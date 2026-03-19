@@ -15,23 +15,30 @@
 
 import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
+import { withCors, corsHeaders } from "@/lib/cors";
 
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 export async function GET() {
 
     const user = await verifyToken();
 
     if (!user) {
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             {
                 success: false,
                 msg: "Unauthorized"
             },
             { status: 401 }
-        );
+        ));
     }
 
-    return NextResponse.json({
+    return withCors(NextResponse.json({
         msg: "Profile data",
         user
-    });
+    }));
 }

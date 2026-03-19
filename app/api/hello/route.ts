@@ -10,8 +10,19 @@ import { NextResponse } from "next/server";
  *       200:
  *         description: Successful response
  */
-export async function GET() {
-  return NextResponse.json({
-    message: "Hello from Gym Ledger API"
+import { withCors, corsHeaders } from "@/lib/cors";
+
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 200,
+    headers: corsHeaders,
   });
+}
+export async function GET() {
+  // return NextResponse.json({
+  //   message: "Hello from Gym Ledger API"
+  // });
+  return withCors(NextResponse.json({
+    message: "Hello from Gym Ledger API"
+  }));
 }

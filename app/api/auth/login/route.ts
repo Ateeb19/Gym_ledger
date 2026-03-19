@@ -55,6 +55,14 @@
 
 import { NextResponse } from "next/server";
 import { login } from "@/controllers/auth/loginController";
+import { withCors, corsHeaders } from "@/lib/cors";
+
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 
 export async function POST(req: Request) {
     try {
@@ -63,19 +71,19 @@ export async function POST(req: Request) {
         const { email, password } = body;
 
         if (!email || !password) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { msg: "All fildes are required" },
                 { status: 400 }
-            );
+            ));
         }
 
         const result = await login(email, password);
 
         if (!result.success) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { msg: result.msg, },
                 { status: 400 },
-            )
+            ))
         }
 
         const response = NextResponse.json(
@@ -94,12 +102,19 @@ export async function POST(req: Request) {
             path: "/"
         });
 
-        return response;
+        // return response;
+        return withCors(response);
 
     } catch (error) {
-        return NextResponse.json(
-            { msg: "Server error" },
-            { status: 500 }
-        )
+        // return NextResponse.json(
+        //     { msg: "Server error" },
+        //     { status: 500 }
+        // )
+        return withCors(
+            NextResponse.json(
+                { msg: "Server error" },
+                { status: 500 }
+            )
+        );
     }
 }

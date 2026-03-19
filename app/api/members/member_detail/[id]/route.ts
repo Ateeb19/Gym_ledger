@@ -78,6 +78,14 @@
  */
 import { NextResponse } from "next/server";
 import { member_detail } from "@/controllers/members/member_detail";
+import { withCors, corsHeaders } from "@/lib/cors";
+
+export async function OPTIONS() {
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders,
+    });
+}
 export async function GET(
     req: Request,
     context: { params: Promise<{ id: string }> }
@@ -86,20 +94,20 @@ export async function GET(
         const { id } = await context.params;
 
         if (!id || isNaN(Number(id))) {
-            return NextResponse.json(
+            return withCors(NextResponse.json(
                 { msg: "Invalid ID" },
                 { status: 400 }
-            );
+            ));
         }
 
         const result = await member_detail(Number(id));
 
-        return NextResponse.json(result);
+        return withCors(NextResponse.json(result));
 
     } catch (error) {
-        return NextResponse.json(
+        return withCors(NextResponse.json(
             { msg: "Server error" },
             { status: 500 }
-        );
+        ));
     }
 }
