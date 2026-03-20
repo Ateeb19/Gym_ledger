@@ -77,13 +77,42 @@ export async function POST(req: Request) {
             ));
         }
 
+        // const result = await login(email, password);
+
+        // if (!result.success) {
+        //     return withCors(NextResponse.json(
+        //         { msg: result.msg, },
+        //         { status: 400 },
+        //     ))
+        // }
+
+        // const response = NextResponse.json(
+        //     {
+        //         msg: result.msg,
+        //         token: result.token,
+        //         user: result.user
+        //     },
+        //     { status: 200 }
+        // );
+
+        // response.cookies.set("token", result.token, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     maxAge: 60 * 60 * 24,
+        //     path: "/"
+        // });
+
+        // // return response;
+        // return withCors(response);
         const result = await login(email, password);
 
-        if (!result.success) {
-            return withCors(NextResponse.json(
-                { msg: result.msg, },
-                { status: 400 },
-            ))
+        if (!result.success || !result.token) {
+            return withCors(
+                NextResponse.json(
+                    { msg: result.msg || "Token generation failed" },
+                    { status: 400 }
+                )
+            );
         }
 
         const response = NextResponse.json(
@@ -97,12 +126,11 @@ export async function POST(req: Request) {
 
         response.cookies.set("token", result.token, {
             httpOnly: true,
-            secure: false,
+            secure: true,
             maxAge: 60 * 60 * 24,
             path: "/"
         });
 
-        // return response;
         return withCors(response);
 
     } catch (error) {
