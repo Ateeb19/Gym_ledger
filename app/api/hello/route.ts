@@ -12,17 +12,22 @@ import { NextResponse } from "next/server";
  */
 import { withCors, corsHeaders } from "@/lib/cors";
 
-export async function OPTIONS() {
-  return new Response(null, {
-    status: 200,
-    headers: corsHeaders,
-  });
+export async function OPTIONS(req: Request) {
+    const origin = req.headers.get("origin");
+
+    return new Response(null, {
+        status: 200,
+        headers: corsHeaders(origin),
+    });
 }
-export async function GET() {
+
+export async function GET(req: Request) {
+      const origin = req.headers.get("origin");
+
   // return NextResponse.json({
   //   message: "Hello from Gym Ledger API"
   // });
   return withCors(NextResponse.json({
     message: "Hello from Gym Ledger API"
-  }));
+  }),origin);
 }

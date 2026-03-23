@@ -57,14 +57,18 @@ import { NextResponse } from "next/server";
 import { login } from "@/controllers/auth/loginController";
 import { withCors, corsHeaders } from "@/lib/cors";
 
-export async function OPTIONS() {
+export async function OPTIONS(req: Request) {
+    const origin = req.headers.get("origin");
+
     return new Response(null, {
         status: 200,
-        headers: corsHeaders,
+        headers: corsHeaders(origin),
     });
 }
 
 export async function POST(req: Request) {
+        const origin = req.headers.get("origin");
+
     try {
         const body = await req.json();
 
@@ -74,7 +78,7 @@ export async function POST(req: Request) {
             return withCors(NextResponse.json(
                 { msg: "All fildes are required" },
                 { status: 400 }
-            ));
+            ),origin);
         }
 
         // const result = await login(email, password);
@@ -111,7 +115,7 @@ export async function POST(req: Request) {
                 NextResponse.json(
                     { msg: result.msg || "Token generation failed" },
                     { status: 400 }
-                )
+                ),origin
             );
         }
 
@@ -131,7 +135,7 @@ export async function POST(req: Request) {
             path: "/"
         });
 
-        return withCors(response);
+        return withCors(response,origin);
 
     } catch (error) {
         // return NextResponse.json(
@@ -142,7 +146,7 @@ export async function POST(req: Request) {
             NextResponse.json(
                 { msg: "Server error" },
                 { status: 500 }
-            )
+            ),origin
         );
     }
 }

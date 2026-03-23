@@ -17,13 +17,16 @@ import { NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 import { withCors, corsHeaders } from "@/lib/cors";
 
-export async function OPTIONS() {
+export async function OPTIONS(req: Request) {
+    const origin = req.headers.get("origin");
+
     return new Response(null, {
         status: 200,
-        headers: corsHeaders,
+        headers: corsHeaders(origin),
     });
 }
-export async function GET() {
+export async function GET(req: Request) {
+    const origin = req.headers.get("origin");
 
     const user = await verifyToken();
 
@@ -34,11 +37,11 @@ export async function GET() {
                 msg: "Unauthorized"
             },
             { status: 401 }
-        ));
+        ), origin);
     }
 
     return withCors(NextResponse.json({
         msg: "Profile data",
         user
-    }));
+    }), origin);
 }

@@ -1,14 +1,15 @@
 import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const signup = async (name: string, email: string, password: string) => {
-    const [existing] : any  = await db.query(
+    const [existing]: any = await db.query(
         `SELECT id FROM users WHERE email = ?`,
         [email]
     );
 
-    if(existing.length > 0){
-        return{
+    if (existing.length > 0) {
+        return {
             success: false,
             msg: "Email already exiest",
         };
@@ -16,13 +17,33 @@ export const signup = async (name: string, email: string, password: string) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await db.query(
+    const [result]: any = await db.query(
         `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`,
         [name, email, hashedPassword],
     );
 
-    return{
+    const userId = result.insertId;
+
+    const token = jwt.sign(
+        {
+            id: userId,
+            name,
+            email,
+            role: 0
+        },
+        process.env.JWT_SECRET as string,
+        {
+            expiresIn: "1d"
+        }
+    );
+    return {
         success: true,
         msg: "User registered",
+        token: token,
+        user: {
+            name: name,
+            email: email,
+            role: 0
+        }
     };
 }

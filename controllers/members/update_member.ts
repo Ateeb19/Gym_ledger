@@ -24,9 +24,21 @@ export const update_memeber = async (
         fitness_goal: "fitness_goal",
         personal_training: "personal_training",
         assign_trainer: "assign_trainer",
-        medical_condition: "medical_condition"
+        medical_condition: "medical_condition",
+        plan_id: "plan_id"
     };
 
+    const [plan]: any = await db.query(
+        "SELECT p_id FROM membership_plan WHERE p_id = ?",
+        [body.plan_id]
+    );
+
+    if (plan.length === 0) {
+        return {
+            success: false,
+            msg: "Invalid plan id. Plan does not exist."
+        };
+    }
     let updates: string[] = [];
     let values: any[] = [];
 
@@ -59,7 +71,6 @@ export const update_memeber = async (
     values.push(member_id, admin.id);
 
     const [result]: any = await db.query(query, values);
-
     if (result.affectedRows === 0) {
         return {
             success: false,

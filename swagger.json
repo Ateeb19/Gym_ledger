@@ -569,6 +569,11 @@
                   "medical_condition": {
                     "type": "string",
                     "example": "None"
+                  },
+                  "plan_id": {
+                    "type": "number",
+                    "format": "int",
+                    "example": 4
                   }
                 }
               }
@@ -604,6 +609,597 @@
           },
           "404": {
             "description": "Member not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/membership_plane/add": {
+      "post": {
+        "summary": "Create a new membership plan",
+        "tags": [
+          "Membership Plan"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "plan_name",
+                  "plan_duration",
+                  "amount"
+                ],
+                "properties": {
+                  "plan_name": {
+                    "type": "string",
+                    "example": "Gold Plan"
+                  },
+                  "plan_duration": {
+                    "type": "string",
+                    "example": "3 Months"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 1500,
+                    "description": "Must be greater than 0"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Plan created successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or duplicate plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "msg": {
+                      "type": "string",
+                      "examples": {
+                        "required": {
+                          "value": "All fields are required"
+                        },
+                        "zeroAmount": {
+                          "value": "Amount can not be 0"
+                        },
+                        "duplicate": {
+                          "value": "Plan already exists"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/membership_plane/delete/{id}": {
+      "delete": {
+        "summary": "Delete a membership plan",
+        "tags": [
+          "Membership Plan"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership Plan ID to delete",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Plan deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Plan deleted successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID or deletion failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "examples": {
+                        "invalidId": {
+                          "value": "Invalid ID"
+                        },
+                        "notFound": {
+                          "value": "Plan not found"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/membership_plane/get": {
+      "get": {
+        "summary": "Get all membership plans",
+        "tags": [
+          "Membership Plan"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully fetched membership plans",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Plans fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "p_id": {
+                            "type": "integer",
+                            "example": 1
+                          },
+                          "plan_name": {
+                            "type": "string",
+                            "example": "Gold Plan"
+                          },
+                          "plan_duration": {
+                            "type": "string",
+                            "example": "3 Months"
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 1500
+                          },
+                          "created_by_id": {
+                            "type": "integer",
+                            "example": 2
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-03-20T10:00:00.000Z"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch plans",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "msg": {
+                      "type": "string",
+                      "example": "Failed to fetch plans"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/membership_plane/update/{id}": {
+      "patch": {
+        "summary": "Update a membership plan (partial update allowed)",
+        "tags": [
+          "Membership Plan"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Membership Plan ID to update",
+            "schema": {
+              "type": "integer",
+              "example": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "plan_name": {
+                    "type": "string",
+                    "example": "Gold Plan"
+                  },
+                  "plan_duration": {
+                    "type": "string",
+                    "example": "6 Months"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 2500
+                  }
+                },
+                "description": "Provide any fields you want to update"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Plan updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Plan updated successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid input or update failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "msg": {
+                      "type": "string",
+                      "examples": {
+                        "invalidId": {
+                          "value": "Invalid ID"
+                        },
+                        "noFields": {
+                          "value": "No fields provided"
+                        },
+                        "duplicate": {
+                          "value": "Plan already exists"
+                        },
+                        "notFound": {
+                          "value": "Plan not found or no changes made"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/payments/add": {
+      "post": {
+        "summary": "Add a new payment for a member",
+        "tags": [
+          "Payments"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "plan_id",
+                  "member_id",
+                  "amount",
+                  "discount_amount",
+                  "payment_mode",
+                  "payment_date",
+                  "membership_expiry_date"
+                ],
+                "properties": {
+                  "plan_id": {
+                    "type": "number",
+                    "example": 1,
+                    "description": "Must be a valid existing plan ID"
+                  },
+                  "member_id": {
+                    "type": "number",
+                    "example": 7,
+                    "description": "Must be a valid existing member ID"
+                  },
+                  "amount": {
+                    "type": "number",
+                    "example": 500,
+                    "description": "Paid amount (must be greater than 0)"
+                  },
+                  "discount_amount": {
+                    "type": "number",
+                    "example": 100,
+                    "description": "Discount applied on plan amount"
+                  },
+                  "payment_mode": {
+                    "type": "string",
+                    "example": "Cash"
+                  },
+                  "payment_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-03-23T10:30:00.000Z"
+                  },
+                  "membership_expiry_date": {
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2026-06-23T10:30:00.000Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Payment added successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Payment added successfully"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error or invalid data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "msg": {
+                      "type": "string",
+                      "examples": {
+                        "required": {
+                          "value": "All fields are required"
+                        },
+                        "zeroAmount": {
+                          "value": "Amount cannot be 0"
+                        },
+                        "invalidPlan": {
+                          "value": "Invalid plan id. Plan does not exist."
+                        },
+                        "invalidMember": {
+                          "value": "Invalid member id. Member does not exist."
+                        },
+                        "discountError": {
+                          "value": "Discount cannot be greater than plan amount"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/payments/get": {
+      "get": {
+        "summary": "Get all payments",
+        "tags": [
+          "Payments"
+        ],
+        "responses": {
+          "200": {
+            "description": "Payments fetched successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Payments fetched successfully"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "payment_id": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "plan_id": {
+                            "type": "number",
+                            "example": 1
+                          },
+                          "member_id": {
+                            "type": "number",
+                            "example": 7
+                          },
+                          "amount": {
+                            "type": "number",
+                            "example": 500
+                          },
+                          "amount_remaining": {
+                            "type": "number",
+                            "example": 200
+                          },
+                          "discount_amount": {
+                            "type": "number",
+                            "example": 100
+                          },
+                          "payment_mode": {
+                            "type": "string",
+                            "example": "Cash"
+                          },
+                          "payment_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-03-23T10:30:00.000Z"
+                          },
+                          "membership_expiry_date": {
+                            "type": "string",
+                            "format": "date-time",
+                            "example": "2026-06-23T10:30:00.000Z"
+                          },
+                          "status": {
+                            "type": "number",
+                            "example": 1
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed to fetch payments",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false
+                    },
+                    "msg": {
+                      "type": "string",
+                      "example": "Failed to fetch payments"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "500": {
             "description": "Server error"

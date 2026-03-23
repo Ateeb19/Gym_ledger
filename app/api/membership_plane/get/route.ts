@@ -1,13 +1,13 @@
 /**
  * @swagger
- * /api/members/get_member:
+ * /api/membership_plane/get:
  *   get:
- *     summary: Get all members created by admin
+ *     summary: Get all membership plans
  *     tags:
- *       - Members
+ *       - Membership Plan
  *     responses:
  *       200:
- *         description: Members fetched successfully
+ *         description: Successfully fetched membership plans
  *         content:
  *           application/json:
  *             schema:
@@ -18,57 +18,49 @@
  *                   example: true
  *                 msg:
  *                   type: string
- *                   example: Members fetched successfully
+ *                   example: Plans fetched successfully
  *                 data:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
- *                       id:
+ *                       p_id:
  *                         type: integer
  *                         example: 1
- *                       full_name:
+ *                       plan_name:
  *                         type: string
- *                         example: John Doe
- *                       email:
+ *                         example: Gold Plan
+ *                       plan_duration:
  *                         type: string
- *                         example: john@example.com
- *                       contact:
- *                         type: string
- *                         example: "9876543210"
- *                       emergency_contact:
- *                         type: string
- *                         example: "9123456789"
- *                       height:
+ *                         example: 3 Months
+ *                       amount:
  *                         type: number
- *                         example: 175
- *                       weight:
- *                         type: number
- *                         example: 70
- *                       fitness_goal:
- *                         type: string
- *                         example: Weight Loss
- *                       personal_training:
+ *                         example: 1500
+ *                       created_by_id:
  *                         type: integer
- *                         example: 1
- *                       assign_trainer:
- *                         type: string
- *                         example: Trainer Name
- *                       medical_condition:
- *                         type: string
- *                         example: None
- *                       join_date:
+ *                         example: 2
+ *                       created_at:
  *                         type: string
  *                         format: date-time
- *                         example: 2026-03-17T10:00:00Z
+ *                         example: 2026-03-20T10:00:00.000Z
+ *       400:
+ *         description: Failed to fetch plans
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   example: Failed to fetch plans
  *       401:
  *         description: Unauthorized
  *       500:
  *         description: Server error
  */
 import { NextResponse } from "next/server";
-import { get_member } from "@/controllers/members/get_member";
 import { withCors, corsHeaders } from "@/lib/cors";
+import { get_m_p } from "@/controllers/membership_plane/get_m_p";
 
 export async function OPTIONS(req: Request) {
     const origin = req.headers.get("origin");
@@ -80,15 +72,15 @@ export async function OPTIONS(req: Request) {
 }
 
 export async function GET(req: Request) {
-const origin = req.headers.get("origin");
+    const origin = req.headers.get("origin");
     try {
-        const result = await get_member();
+        const result = await get_m_p();
 
         if (!result.success) {
             return withCors(NextResponse.json(
-                { msg: result.msg },
+                { success: result.success, msg: result.msg },
                 { status: 400 }
-            ),origin);
+            ), origin);
         }
         return withCors(NextResponse.json(
             {
@@ -97,12 +89,12 @@ const origin = req.headers.get("origin");
                 data: result.data,
             },
             { status: 200 }
-        ),origin)
+        ), origin)
 
     } catch (error) {
         return withCors(NextResponse.json(
             { msg: "Server error" },
             { status: 500 }
-        ),origin)
+        ), origin)
     }
 }

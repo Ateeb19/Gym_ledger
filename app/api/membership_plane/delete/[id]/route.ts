@@ -1,20 +1,21 @@
 /**
  * @swagger
- * /api/members/delete_member/{id}:
+ * /api/membership_plane/delete/{id}:
  *   delete:
- *     summary: Delete a member
+ *     summary: Delete a membership plan
  *     tags:
- *       - Members
+ *       - Membership Plan
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Member ID to delete
+ *         description: Membership Plan ID to delete
  *         schema:
  *           type: integer
+ *           example: 1
  *     responses:
  *       200:
- *         description: Member deleted successfully
+ *         description: Plan deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -22,20 +23,32 @@
  *               properties:
  *                 success:
  *                   type: boolean
+ *                   example: true
  *                 msg:
  *                   type: string
+ *                   example: Plan deleted successfully
  *       400:
- *         description: Invalid ID or request
+ *         description: Invalid ID or deletion failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 msg:
+ *                   type: string
+ *                   examples:
+ *                     invalidId:
+ *                       value: Invalid ID
+ *                     notFound:
+ *                       value: Plan not found
  *       401:
  *         description: Unauthorized
- *       404:
- *         description: Member not found
  *       500:
  *         description: Server error
  */
 import { NextResponse } from "next/server";
-import { delete_member } from "@/controllers/members/delete_member";
 import { withCors, corsHeaders } from "@/lib/cors";
+import { delete_m_p } from "@/controllers/membership_plane/delete_m_p";
 
 export async function OPTIONS(req: Request) {
     const origin = req.headers.get("origin");
@@ -62,7 +75,7 @@ export async function DELETE(
             ), origin);
         }
 
-        const result = await delete_member(Number(id));
+        const result = await delete_m_p(Number(id));
 
         return withCors(NextResponse.json(result), origin);
 

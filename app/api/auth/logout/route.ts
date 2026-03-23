@@ -14,14 +14,19 @@
 import { NextResponse } from "next/server";
 import { withCors, corsHeaders } from "@/lib/cors";
 
-export async function OPTIONS() {
+export async function OPTIONS(req: Request) {
+    
+    const origin = req.headers.get("origin");
+
     return new Response(null, {
         status: 200,
-        headers: corsHeaders,
+        headers: corsHeaders(origin),
     });
 }
-export async function POST() {
 
+export async function POST(req: Request) {
+
+    const origin = req.headers.get("origin");
 
     const response = NextResponse.json({
         msg: "Logout success"
@@ -32,5 +37,5 @@ export async function POST() {
     });
 
     // return response;
-    return withCors(response);
+    return withCors(response,origin);
 }

@@ -80,16 +80,21 @@ import { NextResponse } from "next/server";
 import { member_detail } from "@/controllers/members/member_detail";
 import { withCors, corsHeaders } from "@/lib/cors";
 
-export async function OPTIONS() {
+export async function OPTIONS(req: Request) {
+    const origin = req.headers.get("origin");
+
     return new Response(null, {
         status: 200,
-        headers: corsHeaders,
+        headers: corsHeaders(origin),
     });
 }
+
 export async function GET(
     req: Request,
     context: { params: Promise<{ id: string }> }
 ) {
+    const origin = req.headers.get("origin");
+
     try {
         const { id } = await context.params;
 
@@ -97,17 +102,17 @@ export async function GET(
             return withCors(NextResponse.json(
                 { msg: "Invalid ID" },
                 { status: 400 }
-            ));
+            ), origin);
         }
 
         const result = await member_detail(Number(id));
 
-        return withCors(NextResponse.json(result));
+        return withCors(NextResponse.json(result), origin);
 
     } catch (error) {
         return withCors(NextResponse.json(
             { msg: "Server error" },
             { status: 500 }
-        ));
+        ), origin);
     }
 }

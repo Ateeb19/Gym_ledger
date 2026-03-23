@@ -1,16 +1,15 @@
 /**
  * @swagger
- * /api/members/update_member/{id}:
+ * /api/membership_plane/update/{id}:
  *   patch:
- *     summary: Update member (partial update)
- *     description: Update only the provided fields of a member. Fields not sent will remain unchanged.
+ *     summary: Update a membership plan (partial update allowed)
  *     tags:
- *       - Members
+ *       - Membership Plan
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: Member ID to update
+ *         description: Membership Plan ID to update
  *         schema:
  *           type: integer
  *           example: 1
@@ -21,45 +20,19 @@
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               plan_name:
  *                 type: string
- *                 example: John Doe
- *               email:
+ *                 example: Gold Plan
+ *               plan_duration:
  *                 type: string
- *                 example: john@example.com
- *               contact:
- *                 type: string
- *                 example: "9876543210"
- *               emergency_contact:
- *                 type: string
- *                 example: "9123456780"
- *               height:
+ *                 example: 6 Months
+ *               amount:
  *                 type: number
- *                 format: float
- *                 example: 175.5
- *               weight:
- *                 type: number
- *                 format: float
- *                 example: 70.2
- *               fitness_goal:
- *                 type: string
- *                 example: Weight Loss
- *               personal_training:
- *                 type: boolean
- *                 example: true
- *               assign_trainer:
- *                 type: string
- *                 example: Trainer Name
- *               medical_condition:
- *                 type: string
- *                 example: None
- *               plan_id:
- *                 type: number
- *                 format: int
- *                 example: 4
+ *                 example: 2500
+ *             description: Provide any fields you want to update
  *     responses:
  *       200:
- *         description: Member updated successfully
+ *         description: Plan updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -70,19 +43,36 @@
  *                   example: true
  *                 msg:
  *                   type: string
- *                   example: Member updated successfully
+ *                   example: Plan updated successfully
  *       400:
- *         description: Invalid input or no fields provided
+ *         description: Invalid input or update failed
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 msg:
+ *                   type: string
+ *                   examples:
+ *                     invalidId:
+ *                       value: Invalid ID
+ *                     noFields:
+ *                       value: No fields provided
+ *                     duplicate:
+ *                       value: Plan already exists
+ *                     notFound:
+ *                       value: Plan not found or no changes made
  *       401:
  *         description: Unauthorized
- *       404:
- *         description: Member not found
  *       500:
  *         description: Server error
  */
 import { NextResponse } from "next/server";
-import { update_memeber } from "@/controllers/members/update_member";
 import { withCors, corsHeaders } from "@/lib/cors";
+import { update_m_p } from "@/controllers/membership_plane/update_m_p";
 
 export async function OPTIONS(req: Request) {
     const origin = req.headers.get("origin");
@@ -107,7 +97,7 @@ export async function PATCH(
                 NextResponse.json(
                     { success: false, msg: "Invalid ID" },
                     { status: 400 }
-                ),origin
+                ), origin
             );
         }
 
@@ -118,16 +108,16 @@ export async function PATCH(
                 NextResponse.json(
                     { success: false, msg: "No fields provided" },
                     { status: 400 }
-                ),origin
+                ), origin
             );
         }
 
-        const result = await update_memeber(Number(id), body);
+        const result = await update_m_p(Number(id), body);
 
         return withCors(
             NextResponse.json(result, {
                 status: result.success ? 200 : 400
-            }),origin
+            }), origin
         );
 
     } catch (error) {
@@ -135,7 +125,7 @@ export async function PATCH(
             NextResponse.json(
                 { success: false, msg: "Server error" },
                 { status: 500 }
-            ),origin
+            ), origin
         );
     }
 }
