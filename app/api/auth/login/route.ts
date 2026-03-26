@@ -142,6 +142,7 @@ export async function POST(req: Request) {
         //     { msg: "Server error" },
         //     { status: 500 }
         // )
+        console.log(error);
         return withCors(
             NextResponse.json(
                 { msg: "Server error" },
