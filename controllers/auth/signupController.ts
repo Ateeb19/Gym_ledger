@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const signup = async (name: string, email: string, password: string) => {
+export const signup = async (name: string, email: string, contact: number, gym_name: string, password: string) => {
     const [existing]: any = await db.query(
         `SELECT id FROM users WHERE email = ?`,
         [email]
@@ -18,8 +18,8 @@ export const signup = async (name: string, email: string, password: string) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const [result]: any = await db.query(
-        `INSERT INTO users (name, email, password) VALUES (?, ?, ?)`,
-        [name, email, hashedPassword],
+        `INSERT INTO users (name, email, contact, gym_name, password) VALUES (?, ?, ?, ?, ?)`,
+        [name, email, contact, gym_name, hashedPassword],
     );
 
     const userId = result.insertId;
@@ -29,6 +29,8 @@ export const signup = async (name: string, email: string, password: string) => {
             id: userId,
             name,
             email,
+            contact,
+            gym_name,
             role: 0
         },
         process.env.JWT_SECRET as string,
@@ -43,6 +45,8 @@ export const signup = async (name: string, email: string, password: string) => {
         user: {
             name: name,
             email: email,
+            contact: contact,
+            gym_name: gym_name,
             role: 0
         }
     };

@@ -15,6 +15,8 @@
  *             required:
  *               - name
  *               - email
+ *               - contact
+ *               - gym_name
  *               - password
  *               - confirmPass
  *             properties:
@@ -24,6 +26,12 @@
  *               email:
  *                 type: string
  *                 example: ateeb@gmail.com
+ *               contact:
+ *                 type: string
+ *                 example: 34334343434
+ *               gym_name:
+ *                 type: string
+ *                 example: body_building
  *               password:
  *                 type: string
  *                 example: 12345678
@@ -66,9 +74,9 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
 
-        const { name, email, password, confirmPass } = body;
+        const { name, email, contact, gym_name, password, confirmPass } = body;
 
-        if (!name || !email || !password || !confirmPass) {
+        if (!name || !email || !contact || !gym_name || !password || !confirmPass) {
             return withCors(NextResponse.json(
                 { meg: "All fields are required" },
                 { status: 400 }
@@ -89,7 +97,7 @@ export async function POST(req: Request) {
             ), origin)
         }
 
-        const result = await signup(name, email, password);
+        const result = await signup(name, email, contact, gym_name, password);
 
         // if (!result.success) {
         //     return withCors(NextResponse.json(

@@ -112,6 +112,8 @@
                 "required": [
                   "name",
                   "email",
+                  "contact",
+                  "gym_name",
                   "password",
                   "confirmPass"
                 ],
@@ -123,6 +125,14 @@
                   "email": {
                     "type": "string",
                     "example": "ateeb@gmail.com"
+                  },
+                  "contact": {
+                    "type": "string",
+                    "example": 34334343434
+                  },
+                  "gym_name": {
+                    "type": "string",
+                    "example": "body_building"
                   },
                   "password": {
                     "type": "string",

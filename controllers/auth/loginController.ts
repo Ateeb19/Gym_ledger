@@ -9,7 +9,7 @@ export const login = async (email: string, password: string) => {
         [email]
     );
 
-    if(exist.length < 0){
+    if(exist.length <= 0){
         return{
             success: false,
             msg: "Email or password is wrong",
@@ -32,6 +32,8 @@ export const login = async (email: string, password: string) => {
             id: user.id,
             name: user.name,
             email: user.email,
+            contact: user.contact,
+            gym_name: user.gym_name,
             role: user.role
         },
         process.env.JWT_SECRET as string,
@@ -47,6 +49,8 @@ export const login = async (email: string, password: string) => {
         user: {
             name: user.name,
             email: user.email,
+            contact: user.contact,
+            gym_name: user.gym_name,
             role: user.role
         }
     };
