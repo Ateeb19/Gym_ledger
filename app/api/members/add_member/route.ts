@@ -167,6 +167,7 @@ export async function POST(req: Request) {
         return withCors(response, origin);
 
     } catch (error) {
+        console.log('add member error -: ', error)
         return withCors(NextResponse.json(
             { msg: "Server error" },
             { status: 500 }
