@@ -122,6 +122,7 @@ export async function POST(req: Request) {
 
     }
     catch (error) {
+        console.log('signup error -',error);
         return withCors(
             NextResponse.json(
                 { msg: "Server error" },
