@@ -12,14 +12,10 @@
 // });
 
 const allowedOrigins = [
-<<<<<<< HEAD
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:3000",
     "http://87.106.212.19:3000",
-=======
-    "http://localhost:3000"
->>>>>>> 87ec54e (update frontend)
 ];
 
 export const corsHeaders = (origin: string | null): Record<string, string> => {
