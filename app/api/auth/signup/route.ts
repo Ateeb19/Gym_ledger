@@ -121,8 +121,8 @@ export async function POST(req: Request) {
         );
         response.cookies.set("token", result.token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             maxAge: 60 * 60 * 24,
             path: "/"
         });

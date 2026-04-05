@@ -67,7 +67,7 @@ export async function OPTIONS(req: Request) {
 }
 
 export async function POST(req: Request) {
-        const origin = req.headers.get("origin");
+    const origin = req.headers.get("origin");
 
     try {
         const body = await req.json();
@@ -78,7 +78,7 @@ export async function POST(req: Request) {
             return withCors(NextResponse.json(
                 { msg: "All fildes are required" },
                 { status: 400 }
-            ),origin);
+            ), origin);
         }
 
         // const result = await login(email, password);
@@ -115,7 +115,7 @@ export async function POST(req: Request) {
                 NextResponse.json(
                     { msg: result.msg || "Token generation failed" },
                     { status: 400 }
-                ),origin
+                ), origin
             );
         }
 
@@ -130,25 +130,25 @@ export async function POST(req: Request) {
 
         response.cookies.set("token", result.token, {
             httpOnly: true,
-            secure: false,
-            sameSite: "lax",
+            secure: true,
+            sameSite: "none",
             maxAge: 60 * 60 * 24,
             path: "/"
         });
 
-        return withCors(response,origin);
+        return withCors(response, origin);
 
     } catch (error) {
         // return NextResponse.json(
         //     { msg: "Server error" },
         //     { status: 500 }
         // )
-        console.log('login error -: ',error);
+        console.log('login error -: ', error);
         return withCors(
             NextResponse.json(
                 { msg: "Server error" },
                 { status: 500 }
-            ),origin
+            ), origin
         );
     }
 }
