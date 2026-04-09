@@ -25,7 +25,7 @@ export const add_member = async (name: string, email: string, contact: string, e
         }
     }
 
-    await db.query(`
+    const [result] = await db.query(`
         INSERT INTO members_list (created_by_id, created_by_email, full_name, email, contact, emergency_contact, height, weight, fitness_goal, personal_training, assign_trainer, medical_condition, join_date)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -45,8 +45,11 @@ export const add_member = async (name: string, email: string, contact: string, e
         ]
     );
 
-    return{
+    const userId = result.insertId;
+
+    return {
         success: true,
         msg: "Member creted success",
+        userid: userId
     }
 }

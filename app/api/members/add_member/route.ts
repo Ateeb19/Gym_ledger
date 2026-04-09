@@ -159,7 +159,8 @@ export async function POST(req: Request) {
         const response = NextResponse.json(
             {
                 success: result.success,
-                msg: result.msg
+                msg: result.msg,
+                userid: result.userid
             },
             { status: 200 }
         )
