@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getPlans } from '../../redux/slices/plansSlice'
+import { deleteById, getPlans } from '../../redux/slices/plansSlice'
 import { useParams, useRouter } from 'next/navigation'
 
 
@@ -14,7 +14,7 @@ const PlansList = () => {
   const { plans, loading } = useSelector((state) => state.plans);
 
   useEffect(() => {
-    dispatch(getPlans());
+    dispatch(getPlans()).unwrap();
   }, [dispatch]);
 
 
@@ -84,7 +84,7 @@ const PlansList = () => {
               plans?.map((plan) => (
                 <tr
                   className="hover:bg-slate-50 transition cursor-pointer"
-                  key={p_id}
+                  key={plan.p_id}
                 >
                   <td
                     
@@ -107,7 +107,7 @@ const PlansList = () => {
                     >
                       Edit
                     </button>
-                    <button onClick = {() => deletehandler(member.id)} className="text-red-600 hover:text-red-700 cursor-pointer font-medium z-10">
+                    <button onClick = {() => deletehandler(plan.p_id)} className="text-red-600 hover:text-red-700 cursor-pointer font-medium z-10">
                       Delete
                     </button>
                   </td>

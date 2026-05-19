@@ -30,11 +30,11 @@ const Sidebar = () => {
             Members
           </Link>
 
-          <Link href="/plans" className={linkClass("/dashboard/plans")}>
+          <Link href="/plans" className={linkClass("/plans")}>
             Membership Plans
           </Link>
 
-          <Link href="/dashboard/payments" className={linkClass("/dashboard/payments")}>
+          <Link href="/payment" className={linkClass("/payment")}>
             Payments
           </Link>
 

@@ -9,6 +9,7 @@ import {
   editHandler,
   getMembers,
 } from "../../redux/slices/membersSlice";
+import { getPlans } from "../../redux/slices/plansSlice";
 
 const AddMember = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,9 @@ const AddMember = () => {
   const { id } = useParams();
   const { members, selectedMember } = useSelector((state) => state.members);
   const isEditMode = Boolean(id);
+   const { plans, loading } = useSelector((state) => state.plans);
+  
+    
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -66,7 +70,7 @@ const AddMember = () => {
         await dispatch(
           editHandler({
             id,
-            form,
+            payload: form,
           }),
         ).unwrap();
         alert("Member Updated Successfully");
@@ -77,7 +81,7 @@ const AddMember = () => {
       }
       router.push("/members");
     } catch (error) {
-      console.error(error.message);
+      alert(error.msg);
     }
   }
 
@@ -142,6 +146,11 @@ const AddMember = () => {
       console.error(error);
     }
   };
+
+  //Fetch plans for dropdown
+  useEffect(() => {
+      dispatch(getPlans()).unwrap();
+    }, [dispatch]);
 
   return (
     <div className="w-full bg-white shadow-lg rounded-xl p-6">
@@ -339,14 +348,17 @@ const AddMember = () => {
                   Membership Type
                 </label>
                 <select
+                name="type"
                   value={membership.type}
                   onChange={membershipHandler}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"
                 >
-                  <option disabled>Select the memebrship type</option>
-                  <option>Gold</option>
-                  <option>Diamond</option>
-                  <option>Platinum</option>
+                  <option value= "" disabled>Select the membership type</option>
+                  {plans?.map((plan) => (
+                    <option key={plan.p_id} value={plan.p_id}>
+                      {plan.plan_name} - {plan.plan_duration}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -355,7 +367,9 @@ const AddMember = () => {
                 <label className="block text-sm font-medium text-gray-600 mb-1">
                   Amount Paid
                 </label>
+                
                 <input
+                name="amountPaid"
                   value={membership.amountPaid}
                   onChange={membershipHandler}
                   type="number"
@@ -370,6 +384,7 @@ const AddMember = () => {
                   Discount Amount (if any)
                 </label>
                 <input
+                name="discount"
                   value={membership.discount}
                   onChange={membershipHandler}
                   type="number"
@@ -385,10 +400,12 @@ const AddMember = () => {
                 </label>
 
                 <select
+                name="paymentMode"
                   value={membership.paymentMode}
                   onChange={membershipHandler}
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                 >
+                  <option value="" disabled>Select the payment mode</option>
                   <option>Cash</option>
                   <option>UPI</option>
                   <option>Card</option>
@@ -403,6 +420,7 @@ const AddMember = () => {
                     Membership Start Date
                   </label>
                   <input
+                  name="startDate"
                     value={membership.startDate}
                     onChange={membershipHandler}
                     type="date"
@@ -415,6 +433,7 @@ const AddMember = () => {
                     Membership End Date
                   </label>
                   <input
+                  name="endDate"
                     value={membership.endDate}
                     onChange={membershipHandler}
                     type="date"

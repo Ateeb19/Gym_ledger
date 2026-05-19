@@ -52,7 +52,7 @@ const AddPlan = () => {
 
       router.push("/plans");
     } catch (error) {
-      console.error(error.message);
+      console.error(error.msg);
     }
   };
 
