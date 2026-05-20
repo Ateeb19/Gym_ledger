@@ -51,7 +51,7 @@ export const editHandler = createAsyncThunk(
   async ({id,payload}, thunkAPI) => {
     try {
       const response = await updateMember(id,payload);
-      return response.data;
+      return response;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

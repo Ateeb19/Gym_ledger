@@ -8,8 +8,14 @@ export const fetchPlans = async () => {
 }
 
 //Add Plans
-export const addPlans = async () => {
-    const response = await api.post("/api/membership_plane/add");
+export const addPlans = async (payload) => {
+    const response = await api.post("/api/membership_plane/add", payload);
+    return response.data
+}
+
+//Delete Plans
+export const deletePlans = async (id) => {
+    const response = await api.delete(`/api/membership_plane/delete/${id}`);
     return response.data
 }
 

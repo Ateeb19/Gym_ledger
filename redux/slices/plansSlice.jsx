@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addPlans, fetchPlans } from "../api/plansApi";
+import { addPlans, deletePlans, fetchPlans } from "../api/plansApi";
 
 //Fetch the plans
 
@@ -18,7 +18,7 @@ export const getPlans = createAsyncThunk(
 //Add the plan
 
 export const addHandler = createAsyncThunk(
-    "members/add",
+    "plans/add",
     async(payload, thunkAPI) => {
         try {
             return await addPlans(payload)
@@ -28,22 +28,22 @@ export const addHandler = createAsyncThunk(
     }
 )
 
-// //Delete the Member
+//Delete the Plan
 
-// export const deleteById = createAsyncThunk(
-//   "members/delete",
+export const deleteById = createAsyncThunk(
+  "plans/delete",
 
-//   async (id, thunkAPI) => {
-//     try {
-//       await deleteMember(id);
-//       return id;
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
-//   }
-// );
+  async (id, thunkAPI) => {
+    try {
+      await deletePlans(id);
+      return id;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 
-// //Update the Member
+// //Update the Plan
 
 export const editHandler = createAsyncThunk(
   "plans/update",
@@ -58,18 +58,6 @@ export const editHandler = createAsyncThunk(
   }
 );
 
-// //View a member
-
-// export const viewFeature = createAsyncThunk(
-//   "members/view",
-//   async (id, thunkAPI) => {
-//     try {
-//       return await viewMembers(id);
-//     } catch (error) {
-//       return thunkAPI.rejectWithValue(error.message);
-//     }
-//   }
-// );
 
 export const plansSlice = createSlice({
   name: "plans",
@@ -88,7 +76,7 @@ export const plansSlice = createSlice({
 
   extraReducers: (builder) => {
     builder
-      //Fetching members
+      //Fetching plans
       .addCase(getPlans.pending, (state) => {
         state.loading = true;
       })
@@ -115,23 +103,24 @@ export const plansSlice = createSlice({
         state.error = action.payload;
       })
 
-    // //For delete
-    //   .addCase(deleteById.pending, (state) => {
-    //     state.loading = true;
-    //   })
-    //   .addCase(deleteById.fulfilled, (state, action) => {
-    //     state.loading = false;
-    //     state.members = state.members.filter(
-    //       (member) => member.id !== action.payload
-    //     );
-    //     state.allMembers = state.allMembers.filter(
-    //       (member) => member.id !== action.payload
-    //     );
-    //   })
-    //   .addCase(deleteById.rejected, (state, action) => {
-    //     state.loading = false;
-    //     state.error = action.payload;
-    //   })
+      //For delete
+      .addCase(deleteById.pending, (state) => {
+              state.loading = true;
+            })
+            .addCase(deleteById.fulfilled, (state, action) => {
+              state.loading = false;
+              state.plans = state.plans.filter(
+                (plan) => plan.p_id !== action.payload
+              );
+              state.allPlans = state.allPlans.filter(
+                (plan) => plan.p_id !== action.payload
+              );
+            })
+            .addCase(deleteById.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload;
+            })
+
 
       //For update
       .addCase(editHandler.pending, (state) => {
@@ -146,31 +135,7 @@ export const plansSlice = createSlice({
         state.error = action.payload;
       })
 
-    //    //For view
-    // .addCase(viewFeature.pending, (state) => {
-    //     state.loading = true;
-    //   })
-    //   .addCase(viewFeature.fulfilled, (state, action) => {
-    //     state.loading = false;
-    //     state.selectedMember = action.payload;
-    //   })
-    //   .addCase(viewFeature.rejected, (state, action) => {
-    //     state.loading = false;
-    //     state.error = action.payload;
-    //   })
 
-    //For Search
-    //   .addCase(searchFeature.pending, (state) => {
-    //     state.loading = true;
-    //   })
-    //   .addCase(searchFeature.fulfilled, (state, action) => {
-    //     state.loading = false;
-    //     state.members = action.payload;
-    //   })
-    //   .addCase(searchFeature.rejected, (state, action) => {
-    //     state.loading = false;
-    //     state.error = action.payload;
-    //   })
 
    
 
